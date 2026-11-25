@@ -8,7 +8,7 @@ import { loadSpec } from './spec.js';
 import { openPorts, startServer, runPrepare } from './serve.js';
 import { captureAll } from './capture.js';
 import { encodeStatic, encodeAnim } from './encode.js';
-import { meanDiff } from './compare.js';
+import { diffScore } from './compare.js';
 import { buildRecord, readRecord, sameRecord, writeRecord } from './record.js';
 import { git, tryGit, defaultRef, mergeBase, changedPaths, currentBranch } from './git.js';
 
@@ -29,7 +29,7 @@ async function writeOutput(dir, rel, encoded, keepIfDiffBelow) {
   const path = join(dir, rel);
   if (existsSync(path)) {
     const old = readFileSync(path);
-    const diff = await meanDiff(old, encoded.buffer);
+    const diff = await diffScore(old, encoded.buffer);
     if (diff < keepIfDiffBelow) return { action: 'kept', bytes: old.length, diff };
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, encoded.buffer);

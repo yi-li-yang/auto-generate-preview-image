@@ -231,7 +231,7 @@ export function validateSpec(raw, { repoDir }) {
         output: { ...DEFAULT_ANIM_OUTPUT, ...(raw.anim.output ?? {}) },
       }
       : null,
-    keepIfDiffBelow: raw.keepIfDiffBelow ?? 0.005,
+    keepIfDiffBelow: raw.keepIfDiffBelow ?? 0.01,
     timeoutMs: raw.timeoutMs ?? 30_000,
   };
   return { spec, errors: [] };

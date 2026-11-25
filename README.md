@@ -115,7 +115,7 @@ An example, for an app that loads its data as CSV files from a live site:
 | `steps` | `[]` | See [Steps](#steps). |
 | `output` | 1200x750, 250000 bytes, `"centre"` | Size, byte budget and crop position of the preview image. The position can also be `"attention"` or `"entropy"`. |
 | `anim` | none | The animation: `{ "steps", "output" }`. It may also set its own `viewport`, `deviceScaleFactor`, `colorScheme`, `reducedMotion` and `clock`. Its `output` default is 960x600, 3000000 bytes. |
-| `keepIfDiffBelow` | `0.005` | If a new image differs from the committed one by less than this mean pixel difference (0 to 1), the old file stays, so a re-run with no visible change adds no new binary to git. |
+| `keepIfDiffBelow` | `0.01` | If no small area of the new image differs from the committed one by more than this (0 to 1), the old file stays, so a re-run with no visible change adds no new binary to git. The tool scores the worst small area, not the whole picture, so a changed label or number always counts. |
 | `timeoutMs` | `30000` | Timeout of each step. |
 
 Keys that start with `_`, such as `_edit` and `_comment`, are notes, and the tool ignores them.
