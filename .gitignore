@@ -1,0 +1,3 @@
+node_modules/
+# Machine-specific Claude Code settings (local folder paths, Impeccable hooks).
+.claude/settings.local.json

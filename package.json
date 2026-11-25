@@ -1,0 +1,20 @@
+{
+  "name": "auto-generate-preview-image",
+  "version": "0.1.0",
+  "description": "Makes a repo's README preview image (a static WebP and an optional animated WebP) from its running app, the same way every time.",
+  "type": "module",
+  "bin": {
+    "auto-generate-preview-image": "bin/cli.js"
+  },
+  "scripts": {
+    "test": "node --test --test-concurrency=1"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "1.64.1",
+    "sharp": "^0.35.0"
+  }
+}
