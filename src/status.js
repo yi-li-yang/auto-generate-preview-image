@@ -15,9 +15,27 @@ function parseJson(text) {
   }
 }
 
+// The spec's text: from the default branch first (that is what status judges), then from the
+// checked-out files, then from any branch (a preview that is not merged yet). A repo whose owner
+// is busy on another branch is still found.
+function findSpecText(dir) {
+  const ref = defaultRef(dir);
+  if (ref) {
+    const text = showFile(dir, ref, SPEC_FILE);
+    if (text !== null) return text;
+  }
+  const file = join(dir, SPEC_FILE);
+  if (existsSync(file)) return readFileSync(file, 'utf8');
+  for (const branch of branches(dir)) {
+    const text = showFile(dir, branch, SPEC_FILE);
+    if (text !== null) return text;
+  }
+  return null;
+}
+
 export function repoStatus(dir) {
   const row = { name: basename(dir), dir, ref: null, verdict: 'error', commits: null, capturedAt: null, data: null, note: '' };
-  const spec = parseJson(readFileSync(join(dir, SPEC_FILE), 'utf8'));
+  const spec = parseJson(findSpecText(dir) ?? '');
   if (!spec || !Array.isArray(spec.watch) || spec.watch.length === 0) {
     row.note = `${SPEC_FILE} is not valid or has no watch paths`;
     return row;
@@ -49,7 +67,10 @@ export function repoStatus(dir) {
 
 export function scan(parent) {
   return readdirSync(parent, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && existsSync(join(parent, d.name, SPEC_FILE)))
-    .map((d) => repoStatus(join(parent, d.name)))
+    .filter((d) => d.isDirectory())
+    .map((d) => join(parent, d.name))
+    .filter((dir) => existsSync(join(dir, SPEC_FILE))
+      || (existsSync(join(dir, '.git')) && findSpecText(dir) !== null))
+    .map((dir) => repoStatus(dir))
     .sort((a, b) => a.name.localeCompare(b.name));
 }

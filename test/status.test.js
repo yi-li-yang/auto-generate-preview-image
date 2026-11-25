@@ -113,6 +113,24 @@ test('status reads the remote default branch, not the branch that is checked out
   assert.equal(s.verdict, 'fresh');
 });
 
+test('scan still lists a repo whose checkout is on a branch without preview.json', () => {
+  // Like Livability-Atlas: the preview lives on its own branch, while the owner works elsewhere.
+  const parent = mkdtempSync(join(tmpdir(), 'agpi-scan-'));
+  const dir = join(parent, 'busy-app');
+  mkdirSync(dir);
+  git(dir, 'init', '-q', '-b', 'main');
+  write(dir, 'src/a.txt', 'v1');
+  git(dir, 'add', '.');
+  git(dir, 'commit', '-q', '-m', 'start');
+  git(dir, 'switch', '-q', '-c', 'preview-image');
+  write(dir, 'preview.json', SPEC);
+  commitRecord(dir);
+  git(dir, 'switch', '-q', 'main');
+  git(dir, 'switch', '-q', '-c', 'feature');
+  const rows = scan(parent);
+  assert.deepEqual(rows.map((r) => [r.name, r.verdict]), [['busy-app', 'pending merge']]);
+});
+
 test('scan lists every subfolder that has a preview.json, by name', () => {
   const parent = mkdtempSync(join(tmpdir(), 'agpi-scan-'));
   commitRecord(newRepo(parent, 'b-app'));
