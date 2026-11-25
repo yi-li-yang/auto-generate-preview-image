@@ -35,6 +35,11 @@ read it before changing behaviour.
 - **Tests first.** Write the failing test, watch it fail, then the code. Tests use the real
   browser and real git, not mocks of them.
 - **Plain English** in docs, skills, messages and names: one name for each thing.
-- **Other repos.** When a task edits an app repo, read that repo's `CLAUDE.md` or `AGENTS.md`
-  first (Claude Code does not load them from additional folders). Work on a branch named
-  `preview-image` made from its default branch. Never merge; ask the user before each push or PR.
+- **Other repos.** To edit an app repo, ask for access to its folder through the app's
+  folder-access prompt; this repo never grants itself access to other folders in a settings
+  file. Then read that repo's `CLAUDE.md` or `AGENTS.md` first (Claude Code does not load them
+  from additional folders). Work on a branch named `preview-image` made from its default
+  branch. Never merge; ask the user before each push or PR.
+- **Impeccable** (`.claude/skills/impeccable`, project scope, installed without hooks) reads
+  `PRODUCT.md` as its brief. Use it to critique a capture before it is committed. Never run
+  `/impeccable live`: its Apply button can start an agent with permission checks off.
